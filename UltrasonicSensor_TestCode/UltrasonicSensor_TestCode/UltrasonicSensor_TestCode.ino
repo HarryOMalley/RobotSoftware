@@ -10,54 +10,63 @@ Original code improvements to the Ping sketch sourced from Trollmaker.com
 Some code and wiring inspired by http://en.wikiversity.org/wiki/User:Dstaub/robotcar
 */
 
-#define trigPin 13
-#define echoPin 12
-#define led 11
-#define led2 10
-#define led3 9
+#define trigPinFront 5
+#define echoPinFront 4
+#define trigPinLeft 7
+#define echoPinLeft 6
+#define trigPinRight 9
+#define echoPinRight 8
+
+
+long duration_front, distance_front, duration_left, distance_left, duration_right, distance_right, minimum_front = 7, minimum_right = 15, minimum_left = 15, right_ir_sensor;
+int front_stop;  // is this necessary?
+bool turned_left = false;
+bool turned_right = false;
+
 
 void setup() {
 	Serial.begin(9600);
-	pinMode(trigPin, OUTPUT);
-	pinMode(echoPin, INPUT);
-	pinMode(led, OUTPUT);
-	pinMode(led2, OUTPUT);
-	pinMode(led3, OUTPUT);
+	pinMode(trigPinFront, OUTPUT);
+	pinMode(echoPinFront, INPUT);
+	pinMode(trigPinLeft, OUTPUT);
+	pinMode(echoPinLeft, INPUT);
+	pinMode(trigPinRight, OUTPUT);
+	pinMode(echoPinRight, INPUT);
 }
 
 void loop() {
-	long duration, distance;
-	digitalWrite(trigPin, LOW);  // Added this line
-	delayMicroseconds(2); // Added this line
-	digitalWrite(trigPin, HIGH);
-	//  delayMicroseconds(1000); - Removed this line
-	delayMicroseconds(10); // Added this line
-	digitalWrite(trigPin, LOW);
-	duration = pulseIn(echoPin, HIGH);
-	distance = (duration / 2) / 29.1;
-	if (distance < 4) {  // This is where the LED On/Off happens
-		digitalWrite(led, HIGH); // When the Red condition is met, the Green LED should turn off
-		digitalWrite(led2, LOW);
-		digitalWrite(led3, LOW);
-	}
-	else if (distance < 8)
-	{
-		digitalWrite(led3, HIGH);
-		digitalWrite(led2, LOW);
-		digitalWrite(led, LOW);
-	}
-	
-	else {
-		digitalWrite(led, LOW);
-		digitalWrite(led2, HIGH);
-		digitalWrite(led3, LOW);
-	}
-	if (distance >= 200 || distance <= 0) {
-		Serial.println("Out of range");
-	}
-	else {
-		Serial.print(distance);
-		Serial.println(" cm");
-	}
+	// Ultra sound sensors
+	digitalWrite(trigPinFront, LOW);
+	digitalWrite(trigPinLeft, LOW);
+	digitalWrite(trigPinRight, LOW);
+	delayMicroseconds(2);
+	digitalWrite(trigPinFront, HIGH);
+	digitalWrite(trigPinLeft, HIGH);
+	digitalWrite(trigPinRight, HIGH);
+	delayMicroseconds(10);
+	digitalWrite(trigPinFront, LOW);
+	duration_front = pulseIn(echoPinFront, HIGH);
+	distance_front = (duration_front / 2) / 29.1;
+	digitalWrite(trigPinLeft, LOW);
+	duration_left = pulseIn(echoPinLeft, HIGH);
+	distance_left = (duration_left / 2) / 29.1;
+	digitalWrite(trigPinRight, LOW);
+	duration_right = pulseIn(echoPinRight, HIGH);
+	distance_right = (duration_right / 2) / 29.1;
+
+	//Infrared sensors
+	right_ir_sensor = analogRead(0);
+
+	//delay(10);
+	Serial.print("Front: ");
+	Serial.print(distance_front);
+	Serial.print(" Left: ");
+	Serial.print(distance_left);
+	Serial.print(" Right: ");
+	Serial.println(distance_right);
 	delay(100);
+
+
+
+
 }

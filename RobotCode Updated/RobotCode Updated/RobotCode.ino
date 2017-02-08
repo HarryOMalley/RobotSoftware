@@ -1,5 +1,5 @@
 #include <Servo.h> // Include servo library
-#include <EEPROM.h> // include EEPROM library to store variables in 'mini hardrive' && not in RAM
+#include <EEPROM.h> // include EEPROM library to store variables in 'mini hardrive' and not in RAM
 
 #define trigPinFront 13
 #define echoPinFront 12
@@ -11,7 +11,7 @@
 #define led2 6
 #define led3 5
 
-Servo servoLeft;                             // Declare left && right servos
+Servo servoLeft;                             // Declare left and right servos
 Servo servoRight;
 long duration_front, distance_front, duration_left, distance_left, duration_right, distance_right, minimum_front = 7, minimum_right = 15, minimum_left = 15, right_ir_sensor;
 int front_stop;  // is this necessary?
@@ -72,25 +72,25 @@ void loop()
 												   //servoRight.writeMicroseconds(1300);
 												   //delay(0.1);
 												   //}
-		//if (right_ir_sensor > 550)
-		//{
-		//	servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
-		//	servoRight.writeMicroseconds(1700);
-		//	delay(550);
-		//	//servoLeft.writeMicroseconds(1500);         // Left wheel counterclockwise
-		//	//servoRight.writeMicroseconds(1500);
-		//	//delay(1200);
-		//	servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
-		//	servoRight.writeMicroseconds(1500);
-		//	delay(300);
+		if (right_ir_sensor > 550)
+		{
+			servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
+			servoRight.writeMicroseconds(1700);
+			delay(550);
+			//servoLeft.writeMicroseconds(1500);         // Left wheel counterclockwise
+			//servoRight.writeMicroseconds(1500);
+			//delay(1200);
+			servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
+			servoRight.writeMicroseconds(1500);
+			delay(300);
 
-		//	servoLeft.detach();
-		//	servoRight.detach();
-		//	//delay(550);
-		//	//servoLeft.writeMicroseconds(1500);         // Left wheel counterclockwise
-		//	//servoRight.writeMicroseconds(1500);
-		//	//delay(1200);
-		//}
+			servoLeft.detach();
+			servoRight.detach();
+			//delay(550);
+			//servoLeft.writeMicroseconds(1500);         // Left wheel counterclockwise
+			//servoRight.writeMicroseconds(1500);
+			//delay(1200);
+		}
 
 		//delay(1)    // question, does the delay actually make the wheels faster? Because more time going forward, as opposed to going through logic
 	}
@@ -106,8 +106,8 @@ void loop()
 		Serial.print(turned_left);
 		Serial.println(" LEFT ");
 
-		// if right path open && left closed, turn right
-		if ((distance_right > minimum_right) && (distance_left < minimum_left))
+		// if right path open and left closed, turn right
+		if ((distance_right > minimum_right) and (distance_left < minimum_left))
 		{
 			// Attach servos again
 			servoLeft.attach(3);
@@ -121,8 +121,8 @@ void loop()
 			//delay(240000);
 		}
 
-		// if left path clear && right closed, turn left
-		else if ((distance_right < minimum_right) && (distance_left > minimum_left))
+		// if left path clear and right closed, turn left
+		else if ((distance_right < minimum_right) and (distance_left > minimum_left))
 		{
 			// Attach servos again
 			servoLeft.attach(3);
@@ -136,11 +136,11 @@ void loop()
 			//delay(240000);
 		}
 
-		// if both left && right
-		else if ((distance_right > minimum_right) && (distance_left > minimum_left))
+		// if both left and right
+		else if ((distance_right > minimum_right) and (distance_left > minimum_left))
 		{
 
-			if (turned_left == false && turned_right == false)
+			if (turned_left == false and turned_right == false)
 			{
 				// Attach servos again
 				servoLeft.attach(3);
@@ -156,7 +156,7 @@ void loop()
 				turned_left = true;
 			}
 
-			else if (turned_left == true && turned_right == false)
+			else if (turned_left == true and turned_right == false)
 			{
 				// Attach servos again
 				servoLeft.attach(3);
@@ -169,7 +169,7 @@ void loop()
 				servoRight.detach();
 				turned_right = true;
 			}
-			else if (turned_left == true && turned_right == true)
+			else if (turned_left == true and turned_right == true)
 			{
 				// Attach servos again
 				servoLeft.attach(3);
@@ -185,7 +185,7 @@ void loop()
 		}
 
 		// if in dead end, turn around
-		else if ((distance_right < minimum_right) && (distance_left < minimum_left)) {
+		else if ((distance_right < minimum_right) and (distance_left < minimum_left)) {
 			// Attach servos again
 			servoLeft.attach(3);
 			servoRight.attach(2);

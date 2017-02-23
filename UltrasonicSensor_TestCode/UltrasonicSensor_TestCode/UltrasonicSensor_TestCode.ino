@@ -16,9 +16,11 @@ Some code and wiring inspired by http://en.wikiversity.org/wiki/User:Dstaub/robo
 #define echoPinLeft 6
 #define trigPinRight 9
 #define echoPinRight 8
+#define trigPinBack 11
+#define echoPinBack 10
 
 
-long duration_front, distance_front, duration_left, distance_left, duration_right, distance_right, minimum_front = 7, minimum_right = 15, minimum_left = 15, right_ir_sensor;
+long duration_front, distance_front, duration_left, distance_left, duration_right, distance_right, minimum_front = 7, minimum_right = 15, minimum_left = 15, right_ir_sensor,duration_back,distance_back;
 int front_stop;  // is this necessary?
 bool turned_left = false;
 bool turned_right = false;
@@ -32,6 +34,8 @@ void setup() {
 	pinMode(echoPinLeft, INPUT);
 	pinMode(trigPinRight, OUTPUT);
 	pinMode(echoPinRight, INPUT);
+  pinMode(trigPinBack, OUTPUT);
+  pinMode(echoPinRight, INPUT);
 }
 
 void loop() {
@@ -39,10 +43,12 @@ void loop() {
 	digitalWrite(trigPinFront, LOW);
 	digitalWrite(trigPinLeft, LOW);
 	digitalWrite(trigPinRight, LOW);
+  digitalWrite(trigPinBack, LOW);
 	delayMicroseconds(2);
 	digitalWrite(trigPinFront, HIGH);
 	digitalWrite(trigPinLeft, HIGH);
 	digitalWrite(trigPinRight, HIGH);
+  digitalWrite(trigPinBack, HIGH);
 	delayMicroseconds(10);
 	digitalWrite(trigPinFront, LOW);
 	duration_front = pulseIn(echoPinFront, HIGH);
@@ -53,6 +59,9 @@ void loop() {
 	digitalWrite(trigPinRight, LOW);
 	duration_right = pulseIn(echoPinRight, HIGH);
 	distance_right = (duration_right / 2) / 29.1;
+  digitalWrite(trigPinBack, LOW);
+  duration_back = pulseIn(echoPinBack, HIGH);
+  distance_back = (duration_back / 2) / 29.1;
 
 	//Infrared sensors
 	right_ir_sensor = analogRead(0);
@@ -64,6 +73,8 @@ void loop() {
 	Serial.print(distance_left);
 	Serial.print(" Right: ");
 	Serial.println(distance_right);
+  Serial.print(" Back: ");
+  Serial.println(distance_back);
 	delay(100);
 
 

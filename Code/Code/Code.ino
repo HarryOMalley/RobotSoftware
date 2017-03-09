@@ -15,7 +15,7 @@
 
 Servo servoLeft;                             // Declare left and right servos
 Servo servoRight;
-long duration_front, distance_front, duration_left, distance_left, duration_right, distance_right, distance_back, duration_back, minimum_front = 8, minimum_right = 15, minimum_left = 15, right_ir_sensor;
+long duration_front, distance_front, duration_left, distance_left, duration_right, distance_right, distance_back, duration_back, minimum_front = 7, minimum_right = 15, minimum_left = 15, right_ir_sensor;
 int front_stop;  // is this necessary?
 int last_turn = 0;
 long stop_t, start_t, final_t;
@@ -215,9 +215,7 @@ void loop()
 		servoLeft.detach();
 		servoRight.detach();
 
-		Serial.println("Front too close. Detatched.");
 		delay(1000);
-		Serial.println("Front too close. Delayed.");
 		sensorRefresh();
 
 		// if right path open and left closed, turn right
@@ -359,16 +357,17 @@ void loop()
 		{
 			Serial.println("DEAD END");
 			// Attach servos again
-			//servoLeft.attach(2);
-			//servoRight.attach(3);
+			servoLeft.attach(2);
+			servoRight.attach(3);
 			// turn right
 			//servoLeft.writeMicroseconds(1700);
 			//servoRight.writeMicroseconds(1700);
 			//delay(1000);
 			servoLeft.detach();
 			servoRight.detach();
-			delay(2000);
-			//turned_around();
+			//delay(2000);
+			while (1) { turned_around(); }
+			
 		}
 		else { Serial.print("LAST OPTION TROLOLOL"); }
 
@@ -382,7 +381,7 @@ void loop()
 void sensorRefresh()
 {
 
-	Serial.print("Refreshing sensor \n");
+	//Serial.print("Refreshing sensor \n");
 	// Ultra sound sensors
 	digitalWrite(trigPinFront, LOW);
 	digitalWrite(trigPinLeft, LOW);
@@ -556,12 +555,12 @@ void turned_around()
 
 		//Serial.print(EEPROM.read(2));
 
-		servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
-		servoRight.writeMicroseconds(1600);
+		servoLeft.writeMicroseconds(1600);         // Left wheel counterclockwise
+		servoRight.writeMicroseconds(1300);
 		//delay(10);      // Right wheel clockwise
 
 		//sensorRefresh();
-		turned_around_adjust_func();
+		adjust_func();
 		//new_adjust_func();
 
 	}
@@ -570,7 +569,7 @@ void turned_around()
 		Serial.print("THE MAZE HAS FINSHED. OUT");
 		Serial.print(turned_left);
 		Serial.print(turned_right);
-		return;
+		return 0;
 
 	}
 
@@ -620,8 +619,8 @@ void turned_around()
 			servoLeft.attach(2);
 			servoRight.attach(3);
 			// turn right
-			servoLeft.writeMicroseconds(1300);
-			servoRight.writeMicroseconds(1300);
+			servoLeft.writeMicroseconds(1700);
+			servoRight.writeMicroseconds(1700);
 			delay(450);
 			servoLeft.detach();
 			servoRight.detach();
@@ -637,8 +636,8 @@ void turned_around()
 			servoLeft.attach(2);
 			servoRight.attach(3);
 			// turn left
-			servoLeft.writeMicroseconds(1700);
-			servoRight.writeMicroseconds(1700);
+			servoLeft.writeMicroseconds(1300);
+			servoRight.writeMicroseconds(1300);
 			delay(450);
 			servoLeft.detach();
 			servoRight.detach();
@@ -764,70 +763,4 @@ void turned_around()
 		else { Serial.print("LAST OPTION TROLOLOL"); }
 	}
 
-}
-
-void turned_around_adjust_func()
-{
-	if (abs(distance_left - distance_right) > 3 and abs(distance_left - distance_right) < 8) {
-		//sensorRefresh();
-		//if(distance_front < minimum_front){return;}
-		if (adjust == false) { adj_timer_start = millis(); adjusted_before = true; adjust = true; }
-		else
-		{
-			adj_timer_end = millis();
-			adj_timer_final = adj_timer_end - adj_timer_start;
-			if (adj_timer_final > 3000) { adjust = true; adj_timer_start = millis(); }
-			else { return; }
-		}
-
-
-		if ((distance_left > distance_right) and (adjust == true)) {
-
-			//servoLeft.detach();
-			//servoRight.detach();
-
-			//servoLeft.attach(2);
-			//servoRight.attach(3);
-
-			//servoLeft.detach();
-			//servoRight.detach();
-			//delay(20);
-
-			servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
-			servoRight.writeMicroseconds(1400);
-			delay(40);
-			servoLeft.detach();
-			servoRight.detach();
-			servoLeft.attach(2);
-			servoRight.attach(3);
-			servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
-			servoRight.writeMicroseconds(1600);
-			delay(15);
-
-			//adjust = false;
-			//adjusted_before = false
-
-		}
-		else if ((distance_left < distance_right) and (adjust == true)) {
-
-			//servoLeft.detach();
-			//servoRight.detach();
-			//delay(20);
-
-			servoLeft.writeMicroseconds(1600);         // Left wheel counterclockwise
-			servoRight.writeMicroseconds(1700);
-			delay(40);
-			servoLeft.detach();
-			servoRight.detach();
-			Serial.print("Detatched, and adjusting");
-			servoLeft.attach(2);
-			servoRight.attach(3);
-			servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
-			servoRight.writeMicroseconds(1600);
-			delay(15);
-
-
-			//adjust = false;
-		}
-	}
 }

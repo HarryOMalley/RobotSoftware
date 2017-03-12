@@ -15,4 +15,15 @@ void loop() {
 	{
 		resetMemory(); // If it is high, then call the reset function
 	} // Else do nothing
+	else
+	{
+		Serial.println("Im feeling low");
+		delay(1000);
+	}
+}
+
+void resetMemory()
+{
+	Serial.println("im really high rn");
+	delay(1000);
 }

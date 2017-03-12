@@ -16,7 +16,7 @@ LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Set the LCD I
 
 
 
-int resetState = 0;
+int resetState = 0, mode = 0;
 
 Servo servoLeft;                             // Declare left and right servos
 Servo servoRight;
@@ -61,9 +61,9 @@ void setup()
 
 	checkForReset();
 
-
 	//LCD begin
 	lcd.begin(20, 4);
+	lcd.backlight();
 
 	//if (EEPROM.read(2) == 2) {
 	//resetMemory();
@@ -71,23 +71,23 @@ void setup()
 	//}
 
 	Serial.print("LEFT TIME:");
-	Serial.print(EEPROM.read(0));
-	Serial.print('\n');
+	Serial.println(EEPROM.read(0));
 
 	Serial.print("RIGHT TIME:");
-	Serial.print(EEPROM.read(1));
-	Serial.print('\n');
+	Serial.println(EEPROM.read(1));
 
-	Serial.print("LAST TURNED: ");
-	Serial.print(EEPROM.read(2));
-	Serial.print('\n');
+	Serial.print("Mode: ");
+	mode = EEPROM.read(2);
+	Serial.println(mode);
 
 	Serial.print("\n\n\n");
-
+	lcdFront();
 	turned_left = false;
 	turned_right = false;
 
+	left.add = 0;
 	right.add = 1;
+	
 	//int start_t = 0,  final_t = 0;
 
 
@@ -130,7 +130,6 @@ void setup()
 
 	adj_timer_start = 0, adj_timer_end = 0, adj_timer_final = 0;
 	re = 1;
-	lcd.print("Mode: 2");
 }
 
 void loop()
@@ -138,7 +137,7 @@ void loop()
 	sensorRefresh();	// Refreshing the sensors
 
 	if ((distance_front > minimum_front) and ((distance_left < (minimum_left)) or (distance_right < (minimum_right)))) {
-		Serial.print("Moving Forward!");
+		//Serial.print("Moving Forward!");
 		servoLeft.attach(2);
 		servoRight.attach(3);
 
@@ -154,12 +153,11 @@ void loop()
 		Serial.print("THE MAZE HAS FINSHED. OUT");
 		Serial.print(turned_left);
 		Serial.print(turned_right);
-
+		delay(1500);
 		servoLeft.detach();
 		servoRight.detach();
-
 		store();
-
+		lcdFinish();
 		while (1); //Will go to an endless loop if outside of the maze
 
 
@@ -180,7 +178,7 @@ void loop()
 		{
 			Serial.println("RIGHT PATH OPEN TURNING RIGHT");
 			// Attach servos again
-
+			lcdRight();
 			servoLeft.attach(2);
 			servoRight.attach(3);
 			// turn right
@@ -201,7 +199,7 @@ void loop()
 		{
 			Serial.println("LEFT PATH OPEN TURNING LEFT");
 			// Attach servos again
-
+			lcdLeft();
 			servoLeft.attach(2);
 			servoRight.attach(3);
 
@@ -225,9 +223,12 @@ void loop()
 
 			if (last_turn == 0) // hasnt turned left or right already at T junction
 			{
-
+				lcdLeft();
 				Serial.print("hasnt turned left or righttttt");
-
+				start_t = millis();
+				left.state = true;
+				turned_left = true;
+				turned_right = false;
 				// Attach servos again
 				servoLeft.attach(2);
 				servoRight.attach(3);
@@ -241,16 +242,17 @@ void loop()
 
 				//delay(2000);
 
-				start_t = millis();
-				left.state = true;
-				turned_left = true;
+				
 			}
 
 			else if (last_turn == 1)  // has turned left already at T junction
 			{
 
+				lcdRight();
 				Serial.print("turned already left ");
-
+				start_t = millis();
+				turned_right = true;
+				turned_left = false;
 				// Attach servos again
 				servoLeft.attach(2);
 				servoRight.attach(3);
@@ -262,8 +264,7 @@ void loop()
 				//servoLeft.detach();
 				//servoRight.detach();
 				//delay(2000);
-				start_t = millis();
-				turned_right = true;
+
 			}
 			else if (last_turn == 2) // if it's turned both left and right, calculate quickest route
 			{
@@ -275,7 +276,12 @@ void loop()
 
 				if (temp_left_time > temp_right_time)
 				{
+					lcdRight();
 					Serial.print("##Turning RIGHT because already turned both ways and right is quicker!!! ##");
+					
+					start_t = millis();
+					turned_right = true;
+					turned_left = false;
 					// Attach servos again
 					servoLeft.attach(2);
 					servoRight.attach(3);
@@ -288,8 +294,6 @@ void loop()
 					//servoRight.detach();
 					//delay(2000);
 
-					start_t = millis();
-					turned_right = true;
 
 					// For clearing memory
 					//for (int i = 0; i < EEPROM.length(); i++) { EEPROM.write(i, 0); }
@@ -298,7 +302,11 @@ void loop()
 
 				else
 				{ // turn left
+					lcdLeft();
 					Serial.print("##Turning LEFT because already turned both ways and LEFT is quicker!!! ##");
+					start_t = millis();
+					turned_right = true;
+					turned_left = false;
 					// Attach servos again
 					servoLeft.attach(2);
 					servoRight.attach(3);
@@ -309,8 +317,7 @@ void loop()
 					//delay(530);
 					//servoLeft.detach();
 					//servoRight.detach();
-					start_t = millis();
-					turned_right = true;
+
 					delay(2000);
 					//delay(240000);
 				}
@@ -321,9 +328,8 @@ void loop()
 		else if ((distance_right < minimum_right) and (distance_left < minimum_left) and (distance_front < minimum_front))
 		{
 			Serial.println("DEAD END");
+			lcdReverse();
 			// Attach servos again
-			servoLeft.attach(2);
-			servoRight.attach(3);
 			servoLeft.detach();
 			servoRight.detach();
 			//delay(2000);
@@ -332,6 +338,7 @@ void loop()
 				turned_around();
 			}
 			store();
+			lcdFinish();
 			while (1);
 			Serial.println("Out of recursive loop now");
 		}
@@ -407,8 +414,10 @@ int checkDistance() // Started coding fucntion to check distance - not currently
 void checkForReset()
 {
 	resetState = digitalRead(buttonPin); // Read the state of the pin
-	if (resetState == 1) { resetMemory(); } // calls memory reset funciton
-	else {} // do nothing
+	if (resetState == HIGH) 
+	{ 
+		resetMemory(); 
+	}	// calls memory reset funciton // do nothing
 }
 
 void resetMemory() // clears memory by writing 0s to all addresses.
@@ -486,8 +495,9 @@ void store()
 
 	stop_t = millis();
 
-	final_t = ((start_t - stop_t) / 1000L);
-
+	final_t = ((stop_t - start_t) / 1000L);
+	Serial.print("\n\nTime: ");
+	Serial.println(final_t);
 	if (turned_left == true)
 	{
 		left.time = final_t;
@@ -502,11 +512,13 @@ void store()
 	}
 	else {}
 
+	Serial.println("Saved data.");
+
 }
 
 void auto_adjust() // adjust function if one of the walls is too close. Adjusts according to which wall is closest.
 {
-	Serial.print("Entered Auto Adjust Code \n");
+	//Serial.print("Entered Auto Adjust Code \n");
 
 	ab = abs(distance_left - distance_right);
 	if (ab > 3 and ab < 8) {
@@ -603,7 +615,7 @@ int turned_around()
 		Serial.print("THE MAZE HAS FINSHED. OUT");
 		Serial.print(turned_left);
 		Serial.print(turned_right);
-		delay(2000);
+		delay(1500);
 		servoLeft.detach();
 		servoRight.detach();
 		re = 0;
@@ -856,12 +868,53 @@ void lcdSensor(int left, int right, int front, int back)
 	lcd.setCursor(11, 1);
 	lcd.print("Back: ");
 	lcd.print(back);
-
-
-	//  lcd.setCursor(0, 2);
-	//  lcd.print("Mode: ");
-	//  lcd.print(mode);
-	//  lcd.setCursor(0, 3);
-	//  lcd.print(message);
-	delay(1000);
+}
+void lcdLeft()
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Turned Left!");
+	lcd.setCursor(0, 3);
+	lcd.print("Mode: ");
+	lcd.print(mode);
+}
+void lcdRight()
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Turned Right!");
+	lcd.setCursor(0, 3);
+	lcd.print("Mode: ");
+	lcd.print(mode);
+}
+void lcdFront()
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Hello World!");
+	lcd.setCursor(0, 3);
+	lcd.print("Mode: ");
+	lcd.print(mode);
+}
+void lcdFinish()
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Finished Maze!");
+	lcd.setCursor(0, 3);
+	lcd.print("Mode: ");
+	lcd.print(mode);
+	lcd.setCursor(0, 1);
+	lcd.print(":D");
+	lcd.setCursor(0, 2);
+	lcd.print("Saved Data");
+}
+void lcdReverse()
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Reversing!");
+	lcd.setCursor(0, 3);
+	lcd.print("Mode: ");
+	lcd.print(mode);
 }

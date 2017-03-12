@@ -426,20 +426,7 @@ void new_adjust_func()
 }
 
 
-void dead_end()
-{
-	// Attach servos again
-	servoLeft.attach(2);
-	servoRight.attach(3);
-	// turn right
-	servoLeft.writeMicroseconds(1700);
-	servoRight.writeMicroseconds(1700);
-	delay(1000);
-	servoLeft.detach();
-	servoRight.detach();
-	delay(2000);
 
-}
 
 void turn_left()
 {
@@ -562,33 +549,6 @@ int turned_around()
 	}
 
 
-
-
-	//if (right_ir_sensor > 550)
-	//{
-	//servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
-	//servoRight.writeMicroseconds(1700);
-	//delay(550);
-
-	////servoLeft.writeMicroseconds(1500);         // Left wheel counterclockwise
-	////servoRight.writeMicroseconds(1500);
-	////delay(1200);
-
-	//servoLeft.writeMicroseconds(1300);         // Left wheel counterclockwise
-	//servoRight.writeMicroseconds(1500);
-	//delay(300);
-
-	// servoLeft.detach();
-	// servoRight.detach();
-
-	//delay(550);
-	//servoLeft.writeMicroseconds(1500);         // Left wheel counterclockwise
-	//servoRight.writeMicroseconds(1500);
-	//delay(1200);
-	//}
-
-	//delay(1)    // question, does the delay actually make the wheels faster? Because more time going forward, as opposed to going through logic
-	//}
 	else { // else if there needs to be some intelligence involved
 		   // Stop the robot
 
@@ -766,21 +726,14 @@ void turned_around_adjust_func()
 			adj_timer_end = millis();
 			adj_timer_final = adj_timer_end - adj_timer_start;
 			if (adj_timer_final > 3000) { adjust = true; adj_timer_start = millis(); }
-			else { return; }
+			else 
+			{ 
+				return; 
+			}
 		}
 
 
 		if ((distanceLeft > distanceRight) and (adjust == true)) {
-
-			//servoLeft.detach();
-			//servoRight.detach();
-
-			//servoLeft.attach(2);
-			//servoRight.attach(3);
-
-			//servoLeft.detach();
-			//servoRight.detach();
-			//delay(20);
 
 			servoLeft.writeMicroseconds(1700);         // Left wheel counterclockwise
 			servoRight.writeMicroseconds(1600);
@@ -843,4 +796,21 @@ void lcdSensor(int left, int right, int front, int back)
 	//  lcd.setCursor(0, 3);
 	//  lcd.print(message);
 	delay(1000);
+}
+
+// Unused code 
+
+void dead_end()
+{
+	// Attach servos again
+	servoLeft.attach(2);
+	servoRight.attach(3);
+	// turn right
+	servoLeft.writeMicroseconds(1700);
+	servoRight.writeMicroseconds(1700);
+	delay(1000);
+	servoLeft.detach();
+	servoRight.detach();
+	delay(2000);
+
 }

@@ -20,7 +20,7 @@ Some code and wiring inspired by http://en.wikiversity.org/wiki/User:Dstaub/robo
 #define echoPinBack 10
 
 
-long duration_front, distance_front, duration_left, distance_left, duration_right, distance_right, minimum_front = 7, minimum_right = 15, minimum_left = 15, right_ir_sensor,duration_back,distance_back;
+long duration_front, distance_front, duration_left, distance_left, duration_right, distance_right, minimum_front = 7, minimum_right = 15, minimum_left = 15, right_ir_sensor, duration_back, distance_back;
 int front_stop;  // is this necessary?
 bool turned_left = false;
 bool turned_right = false;
@@ -34,8 +34,8 @@ void setup() {
 	pinMode(echoPinLeft, INPUT);
 	pinMode(trigPinRight, OUTPUT);
 	pinMode(echoPinRight, INPUT);
-  pinMode(trigPinBack, OUTPUT);
-  pinMode(echoPinRight, INPUT);
+	pinMode(trigPinBack, OUTPUT);
+	pinMode(echoPinRight, INPUT);
 }
 
 void loop() {
@@ -43,25 +43,25 @@ void loop() {
 	digitalWrite(trigPinFront, LOW);
 	digitalWrite(trigPinLeft, LOW);
 	digitalWrite(trigPinRight, LOW);
-  digitalWrite(trigPinBack, LOW);
+	digitalWrite(trigPinBack, LOW);
 	delayMicroseconds(2);
 	digitalWrite(trigPinFront, HIGH);
 	digitalWrite(trigPinLeft, HIGH);
 	digitalWrite(trigPinRight, HIGH);
-  digitalWrite(trigPinBack, HIGH);
+	digitalWrite(trigPinBack, HIGH);
 	delayMicroseconds(10);
 	digitalWrite(trigPinFront, LOW);
-	duration_front = pulseIn(echoPinFront, HIGH);
+	duration_front = pulseIn(echoPinFront, HIGH, 75000);
 	distance_front = (duration_front / 2) / 29.1;
 	digitalWrite(trigPinLeft, LOW);
-	duration_left = pulseIn(echoPinLeft, HIGH);
+	duration_left = pulseIn(echoPinLeft, HIGH, 75000);
 	distance_left = (duration_left / 2) / 29.1;
 	digitalWrite(trigPinRight, LOW);
-	duration_right = pulseIn(echoPinRight, HIGH);
+	duration_right = pulseIn(echoPinRight, HIGH, 75000);
 	distance_right = (duration_right / 2) / 29.1;
-  digitalWrite(trigPinBack, LOW);
-  duration_back = pulseIn(echoPinBack, HIGH);
-  distance_back = (duration_back / 2) / 29.1;
+	digitalWrite(trigPinBack, LOW);
+	duration_back = pulseIn(echoPinBack, HIGH, 75000);
+	distance_back = (duration_back / 2) / 29.1;
 
 	//Infrared sensors
 	right_ir_sensor = analogRead(0);
@@ -73,8 +73,8 @@ void loop() {
 	Serial.print(distance_left);
 	Serial.print(" Right: ");
 	Serial.println(distance_right);
-  Serial.print(" Back: ");
-  Serial.println(distance_back);
+	Serial.print(" Back: ");
+	Serial.println(distance_back);
 	delay(100);
 
 

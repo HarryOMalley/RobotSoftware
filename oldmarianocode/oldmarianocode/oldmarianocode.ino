@@ -1,3 +1,4 @@
+
 #include <Servo.h> // Include servo library
 #include <EEPROM.h> // include EEPROM library to store variables in 'mini hardrive' and not in RAM
 #include <time.h>
@@ -144,7 +145,7 @@ void loop()
 
 		servoLeft.writeMicroseconds(1600);			// Left wheel counterclockwise
 		servoRight.writeMicroseconds(1300);			// Right wheel clockwise
-		//delay(10);     
+													//delay(10);     
 
 		auto_adjust();
 	}
@@ -168,7 +169,7 @@ void loop()
 
 	  // Stop the robot
 
-		//Serial.println("Front too close");
+	  //Serial.println("Front too close");
 		servoLeft.detach();
 		servoRight.detach();
 		delay(1000);
@@ -223,17 +224,17 @@ void loop()
 
 			if (last_turn == 0) // hasnt turned left or right already at T junction
 			{
-				lcdRight();
-				
+				lcdLeft();
+				Serial.print("hasnt turned left or righttttt");
 				start_t = millis();
-				right.state = true;
-				turned_left = false;
-				turned_right = true;
+				left.state = true;
+				turned_left = true;
+				turned_right = false;
 				// Attach servos again
 				servoLeft.attach(2);
 				servoRight.attach(3);
 				// turn left
-				turn_right();
+				turn_left();
 				//servoLeft.writeMicroseconds(1300);
 				//servoRight.writeMicroseconds(1300);
 				//delay(530);
@@ -245,19 +246,19 @@ void loop()
 
 			}
 
-			else if (last_turn == 1)  // has turned right already at T junction
+			else if (last_turn == 1)  // has turned left already at T junction
 			{
 
-				lcdLeft();
-				Serial.print("turned already right");
+				lcdRight();
+				Serial.print("turned already left ");
 				start_t = millis();
-				turned_right = false;
-				turned_left = true;
+				turned_right = true;
+				turned_left = false;
 				// Attach servos again
 				servoLeft.attach(2);
 				servoRight.attach(3);
-				// turn left
-				turn_left();
+				// turn right
+				turn_right();
 				//servoLeft.writeMicroseconds(1700);
 				//servoRight.writeMicroseconds(1700);
 				//delay(600);
@@ -342,7 +343,7 @@ void loop()
 			while (1);
 			Serial.println("Out of recursive loop now");
 		}
-		else {}
+		else { Serial.print("LAST OPTION TROLOLOL"); }
 
 	}
 	//unsigned long currentMillis = millis();
@@ -373,16 +374,14 @@ void sensorRefresh()
 	delayMicroseconds(10);
 	digitalWrite(trigPinFront, LOW);
 	duration_front = pulseIn(echoPinFront, HIGH);
-	if (duration_front == 0) { distance_front = 50; }
-	else { distance_front = duration_front * (0.034 / 2); }
+	distance_front = duration_front * (0.034 / 2);
 	digitalWrite(trigPinLeft, LOW);
 	duration_left = pulseIn(echoPinLeft, HIGH);
-	if (duration_left == 0) { distance_left = 50; }
-	else { distance_left = duration_left * (0.034 / 2); }
+	distance_left = duration_left * (0.034 / 2);
 	digitalWrite(trigPinRight, LOW);
 	duration_right = pulseIn(echoPinRight, HIGH);
-	if (duration_right == 0) { distance_right = 50; }
-	else { distance_right = duration_right * (0.034 / 2); }
+	distance_right = duration_right * (0.034 / 2);
+
 	digitalWrite(trigPinBack, LOW);
 	duration_back = pulseIn(echoPinBack, HIGH, 100000);
 	if (duration_back == 0) { distance_back = 50; }
@@ -419,7 +418,7 @@ void checkForReset()
 	if (resetState == HIGH)
 	{
 		resetMemory();
-	}	// calls memory reset funciton // do nothingH
+	}	// calls memory reset funciton // do nothing
 }
 
 void resetMemory() // clears memory by writing 0s to all addresses.
@@ -471,7 +470,7 @@ void turn_left()
 	// turn left
 	servoLeft.writeMicroseconds(1300);
 	servoRight.writeMicroseconds(1300);
-	delay(600);
+	delay(550);
 	servoLeft.detach();
 	servoRight.detach();
 	delay(2000);
@@ -504,13 +503,13 @@ void store()
 	{
 		left.time = final_t;
 		EEPROM.write(left.add, left.time);
-		EEPROM.write(2, 2); // recording the last turn of the robot, 1 is RIGHT, 2 is LEFT
+		EEPROM.write(2, 1); // recording the last turn of the robot, 1 is left, 2 is right
 	}
 	else if (turned_right == true)
 	{
 		right.time = final_t;
 		EEPROM.write(right.add, right.time);
-		EEPROM.write(2, 1); // recording the last turn of the robot, 1 is RIGHT, 2 is LEFT
+		EEPROM.write(2, 2); // recording the last turn of the robot, 1 is left, 2 is right
 	}
 	else {}
 

@@ -920,3 +920,12 @@ void lcdReverse()
 	lcd.print("Mode: ");
 	lcd.print(mode);
 }
+void lcdAdjust()
+{
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Adjusting!");
+	lcd.setCursor(0, 3);
+	lcd.print("Mode: ");
+	lcd.print(mode);
+}

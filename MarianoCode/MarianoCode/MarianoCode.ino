@@ -421,7 +421,7 @@ void turn_left()
 	// turn left
 	servoLeft.writeMicroseconds(1300);
 	servoRight.writeMicroseconds(1300);
-	delay(600);
+	delay(550);
 	servoLeft.detach();
 	servoRight.detach();
 	delay(2000);

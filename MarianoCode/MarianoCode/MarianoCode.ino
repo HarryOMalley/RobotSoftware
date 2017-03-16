@@ -146,7 +146,7 @@ void loop()
 		servoRight.writeMicroseconds(1300);			// Right wheel clockwise
 		//delay(10);     
 
-		auto_adjust();
+		//auto_adjust();
 	}
 	else if ((distance_left > (minimum_left + 5)) and (distance_right > (minimum_right + 5)) and (distance_front > (minimum_front + 10))) {
 

@@ -797,7 +797,8 @@ void lcdFinish()
 	lcd.print("Mode: ");
 	lcd.print(mode);
 	lcd.setCursor(0, 1);
-	lcd.print(":D");
+	lcd.print(":D    Time: ");
+	lcd.print(final_t);
 	lcd.setCursor(0, 2);
 	lcd.print("Saved Data");
 }

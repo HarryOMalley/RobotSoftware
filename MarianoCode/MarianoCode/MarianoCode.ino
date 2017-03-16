@@ -563,12 +563,8 @@ int turned_around()
 			servoLeft.attach(2);
 			servoRight.attach(3);
 			// turn right
-			servoLeft.writeMicroseconds(1300);
-			servoRight.writeMicroseconds(1300);
-			delay(450);
-			servoLeft.detach();
-			servoRight.detach();
-			delay(1000);
+			turn_right();
+			
 			//sensorRefresh();
 		}
 
@@ -580,12 +576,7 @@ int turned_around()
 			servoLeft.attach(2);
 			servoRight.attach(3);
 			// turn left
-			servoLeft.writeMicroseconds(1700);
-			servoRight.writeMicroseconds(1700);
-			delay(450);
-			servoLeft.detach();
-			servoRight.detach();
-			delay(1000);
+			turn_left();
 			//sensorRefresh();
 		}
 
@@ -604,13 +595,7 @@ int turned_around()
 				servoLeft.attach(2);
 				servoRight.attach(3);
 				// turn left
-				servoLeft.writeMicroseconds(1700);
-				servoRight.writeMicroseconds(1700);
-				delay(450);
-				servoLeft.detach();
-				servoRight.detach();
-				//delay(240000);
-				delay(2000);
+				turn_left();
 
 				start_t = millis();
 				left.state = true;
@@ -626,12 +611,7 @@ int turned_around()
 				servoLeft.attach(2);
 				servoRight.attach(3);
 				// turn right
-				servoLeft.writeMicroseconds(1300);
-				servoRight.writeMicroseconds(1300);
-				delay(450);
-				servoLeft.detach();
-				servoRight.detach();
-				delay(2000);
+				turn_right();
 				start_t = millis();
 				turned_right = true;
 			}
@@ -650,13 +630,7 @@ int turned_around()
 					servoLeft.attach(2);
 					servoRight.attach(3);
 					// turn right
-					servoLeft.writeMicroseconds(1300);
-					servoRight.writeMicroseconds(1300);
-					delay(450);
-					servoLeft.detach();
-					servoRight.detach();
-
-					delay(2000);
+					turn_right();
 
 					start_t = millis();
 					turned_right = true;
@@ -676,14 +650,9 @@ int turned_around()
 					servoLeft.attach(2);
 					servoRight.attach(3);
 					// turn left
-					servoLeft.writeMicroseconds(1700);
-					servoRight.writeMicroseconds(1700);
-					delay(450);
-					servoLeft.detach();
-					servoRight.detach();
+					turn_left();
 					start_t = millis();
 					turned_right = true;
-					delay(2000);
 					//delay(240000);
 				}
 			}

@@ -184,14 +184,6 @@ void loop()
 			// turn right
 			turn_right();
 
-			//servoLeft.writeMicroseconds(1600);
-			//servoRight.writeMicroseconds(1700);
-			//delay(530);
-			//servoLeft.detach();
-			//servoRight.detach();
-			//delay(1000);
-
-			//sensorRefresh();
 		}
 
 		// if left path clear and right closed, turn left
@@ -205,14 +197,6 @@ void loop()
 
 			// turn left
 			turn_left();
-			//servoLeft.writeMicroseconds(1300);
-			//servoRight.writeMicroseconds(1300);
-			//delay(530);
-			//servoLeft.detach();
-			//servoRight.detach();
-			//delay(1000);
-
-			//sensorRefresh();
 		}
 
 		// if both left and right are clear
@@ -234,15 +218,6 @@ void loop()
 				servoRight.attach(3);
 				// turn left
 				turn_right();
-				//servoLeft.writeMicroseconds(1300);
-				//servoRight.writeMicroseconds(1300);
-				//delay(530);
-				//servoLeft.detach();
-				//servoRight.detach();
-
-				//delay(2000);
-
-
 			}
 
 			else if (last_turn == 1)  // has turned right already at T junction
@@ -258,13 +233,6 @@ void loop()
 				servoRight.attach(3);
 				// turn left
 				turn_left();
-				//servoLeft.writeMicroseconds(1700);
-				//servoRight.writeMicroseconds(1700);
-				//delay(600);
-				//servoLeft.detach();
-				//servoRight.detach();
-				//delay(2000);
-
 			}
 			else if (last_turn == 2) // if it's turned both left and right, calculate quickest route
 			{
@@ -287,17 +255,6 @@ void loop()
 					servoRight.attach(3);
 					// turn right
 					turn_right();
-					//servoLeft.writeMicroseconds(1700);
-					//servoRight.writeMicroseconds(1700);
-					//delay(530);
-					//servoLeft.detach();
-					//servoRight.detach();
-					//delay(2000);
-
-
-					// For clearing memory
-					//for (int i = 0; i < EEPROM.length(); i++) { EEPROM.write(i, 0); }
-
 				}
 
 				else
@@ -312,14 +269,7 @@ void loop()
 					servoRight.attach(3);
 					// turn left
 					turn_left();
-					//servoLeft.writeMicroseconds(1300);
-					//servoRight.writeMicroseconds(1300);
-					//delay(530);
-					//servoLeft.detach();
-					//servoRight.detach();
-
 					delay(2000);
-					//delay(240000);
 				}
 			}
 		}
@@ -373,29 +323,44 @@ void sensorRefresh()
 	delayMicroseconds(10);
 	digitalWrite(trigPinFront, LOW);
 	duration_front = pulseIn(echoPinFront, HIGH);
-	if (duration_front == 0) { distance_front = 50; }
-	else { distance_front = duration_front * (0.034 / 2); }
+	if (duration_front == 0) 
+	{ 
+		distance_front = 50; 
+	}
+	else 
+	{ 
+		distance_front = duration_front * (0.034 / 2); 
+	}
 	digitalWrite(trigPinLeft, LOW);
 	duration_left = pulseIn(echoPinLeft, HIGH);
-	if (duration_left == 0) { distance_left = 50; }
-	else { distance_left = duration_left * (0.034 / 2); }
+	if (duration_left == 0) 
+	{ 
+		distance_left = 50; 
+	}
+	else 
+	{ 
+		distance_left = duration_left * (0.034 / 2); 
+	}
 	digitalWrite(trigPinRight, LOW);
 	duration_right = pulseIn(echoPinRight, HIGH);
-	if (duration_right == 0) { distance_right = 50; }
-	else { distance_right = duration_right * (0.034 / 2); }
+	if (duration_right == 0) 
+	{ 
+		distance_right = 50; 
+	}
+	else 
+	{ 
+		distance_right = duration_right * (0.034 / 2); 
+	}
 	digitalWrite(trigPinBack, LOW);
 	duration_back = pulseIn(echoPinBack, HIGH, 100000);
-	if (duration_back == 0) { distance_back = 50; }
-	else { distance_back = duration_back * (0.034 / 2); }
-
-
-
-
-
-	//Infrared sensors
-	//right_ir_sensor = analogRead(A3);
-
-	//delay(10);
+	if (duration_back == 0) 
+	{ 
+		distance_back = 50; 
+	}
+	else 
+	{ 
+		distance_back = duration_back * (0.034 / 2); 
+	}
 }
 
 int checkDistance() // Started coding fucntion to check distance - not currently used
@@ -430,22 +395,7 @@ void resetMemory() // clears memory by writing 0s to all addresses.
 	}
 }
 
-void new_adjust_func()
-{
-	if (abs(distance_left - distance_right) > 3 and abs(distance_left - distance_right) < 15)
-	{
-		if (distance_left > distance_right)
-		{
-			y += 50;
-			x -= 50;
-			//if y >
-		}
-		else if (distance_left < distance_right)
-		{
-			x -= 50; y += 50;
-		}
-	}
-}
+
 
 
 void dead_end()
@@ -520,8 +470,6 @@ void store()
 
 void auto_adjust() // adjust function if one of the walls is too close. Adjusts according to which wall is closest.
 {
-	//Serial.print("Entered Auto Adjust Code \n");
-
 	ab = abs(distance_left - distance_right);
 	if (ab > 3 and ab < 8) {
 		//sensorRefresh();
@@ -537,30 +485,12 @@ void auto_adjust() // adjust function if one of the walls is too close. Adjusts 
 
 
 		if ((distance_left > distance_right) and (adjust == true)) {
-
-			//servoLeft.detach();
-			//servoRight.detach();
-
-			//servoLeft.attach(2);
-			//servoRight.attach(3);
-
-			//servoLeft.detach();
-			//servoRight.detach();
-			//delay(20);
-
 			servoLeft.writeMicroseconds(1400);         // Left wheel counterclockwise
 			servoRight.writeMicroseconds(1300);
 			delay(40);
-			servoLeft.detach();
-			servoRight.detach();
-			servoLeft.attach(2);
-			servoRight.attach(3);
 			servoLeft.writeMicroseconds(1600);         // Left wheel counterclockwise
 			servoRight.writeMicroseconds(1300);
 			delay(15);
-
-			//adjust = false;
-			//adjusted_before = false
 
 		}
 		else if ((distance_left < distance_right) and (adjust == true)) {
@@ -572,17 +502,9 @@ void auto_adjust() // adjust function if one of the walls is too close. Adjusts 
 			servoLeft.writeMicroseconds(1700);         // Left wheel counterclockwise
 			servoRight.writeMicroseconds(1600);
 			delay(40);
-			servoLeft.detach();
-			servoRight.detach();
-			Serial.print("Detatched, and adjusting");
-			servoLeft.attach(2);
-			servoRight.attach(3);
 			servoLeft.writeMicroseconds(1600);         // Left wheel counterclockwise
 			servoRight.writeMicroseconds(1300);
 			delay(15);
-
-
-			//adjust = false;
 		}
 	}
 }
@@ -609,7 +531,6 @@ int turned_around()
 
 		//sensorRefresh();
 		turned_around_adjust_func();
-		//new_adjust_func();
 
 	}
 	else if ((distance_left > (minimum_left + 5)) and (distance_right > (minimum_right + 5)) and (distance_back > (minimum_front + 10)))
@@ -929,3 +850,22 @@ void lcdAdjust()
 	lcd.print("Mode: ");
 	lcd.print(mode);
 }
+
+//Unused Code 
+
+//void new_adjust_func()
+//{
+//	if (abs(distance_left - distance_right) > 3 and abs(distance_left - distance_right) < 15)
+//	{
+//		if (distance_left > distance_right)
+//		{
+//			y += 50;
+//			x -= 50;
+//			//if y >
+//		}
+//		else if (distance_left < distance_right)
+//		{
+//			x -= 50; y += 50;
+//		}
+//	}
+//}
